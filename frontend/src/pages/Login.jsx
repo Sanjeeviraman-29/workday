@@ -1,22 +1,53 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
 
 function Login() {
   const [role, setRole] = useState("vendor");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log("Selected role:", role);
+    setError("");
 
-    // Dashboard navigation will be added later.
+    const vendorEmail = "vendor@workforce.com";
+    const vendorPassword = "vendor123";
+
+    const clientEmail = "client@workforce.com";
+    const clientPassword = "client123";
+
+    if (
+      role === "vendor" &&
+      email === vendorEmail &&
+      password === vendorPassword
+    ) {
+      navigate("/vendor/dashboard");
+      return;
+    }
+
+    if (
+      role === "client" &&
+      email === clientEmail &&
+      password === clientPassword
+    ) {
+      navigate("/client/dashboard");
+      return;
+    }
+
+    setError(
+      `Invalid ${role === "vendor" ? "Vendor" : "Client"} credentials.`
+    );
   };
 
   return (
     <div className="login-page">
       <div className="login-container">
 
-        {/* Brand */}
         <div className="login-brand">
           <div className="brand-mark">W</div>
 
@@ -26,7 +57,6 @@ function Login() {
           </div>
         </div>
 
-        {/* Login Card */}
         <div className="login-card">
 
           <div className="login-heading">
@@ -47,7 +77,10 @@ function Login() {
                   className={`role-option ${
                     role === "vendor" ? "selected" : ""
                   }`}
-                  onClick={() => setRole("vendor")}
+                  onClick={() => {
+                    setRole("vendor");
+                    setError("");
+                  }}
                 >
                   <div className="role-icon">V</div>
 
@@ -64,7 +97,10 @@ function Login() {
                   className={`role-option ${
                     role === "client" ? "selected" : ""
                   }`}
-                  onClick={() => setRole("client")}
+                  onClick={() => {
+                    setRole("client");
+                    setError("");
+                  }}
                 >
                   <div className="role-icon">C</div>
 
@@ -86,6 +122,8 @@ function Login() {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@company.com"
                 required
               />
@@ -98,10 +136,19 @@ function Login() {
               <input
                 id="password"
                 type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 placeholder="Enter your password"
                 required
               />
             </div>
+
+            {/* Error */}
+            {error && (
+              <p className="login-error">
+                {error}
+              </p>
+            )}
 
             {/* Submit */}
             <button type="submit" className="login-button">
